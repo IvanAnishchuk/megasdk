@@ -29,7 +29,7 @@
 #include "mega/sync.h"
 #include "megafs.h"
 
-#include <utf8proc/utf8proc.h>
+#include <utf8proc.h>
 
 #include <cassert>
 #include <cctype>
