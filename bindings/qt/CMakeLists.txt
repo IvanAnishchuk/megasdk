@@ -30,12 +30,13 @@ target_include_directories(SDKQtBindings
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> # For the external projects.
 )
 
-find_package(Qt5 REQUIRED COMPONENTS Core)
-message(STATUS "Building the SDK Qt Bindings with Qt v${Qt5_VERSION} from ${Qt5_DIR}")
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+message(STATUS "Building the SDK Qt Bindings with Qt v${QT_VERSION} from ${Qt${QT_VERSION_MAJOR}_DIR}")
 
 target_link_libraries(SDKQtBindings
     PRIVATE
-    Qt5::Core
+    Qt${QT_VERSION_MAJOR}::Core
     MEGA::SDKlib
 )
 
