@@ -24,7 +24,7 @@
 #include "mega/logging.h"
 #include "mega/megaclient.h"
 
-#include <utf8proc/utf8proc.h>
+#include <utf8proc.h>
 
 #include <cctype>
 #include <cstdint>

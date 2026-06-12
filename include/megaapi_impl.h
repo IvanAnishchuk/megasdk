@@ -44,7 +44,7 @@
 #ifdef HAVE_LIBUV
 #include "uv.h"
 
-#include <http_parser/http_parser.h>
+#include <http_parser.h>
 
 #ifdef USE_OPENSSL
 #include <evt-tls/evt_tls.h>
