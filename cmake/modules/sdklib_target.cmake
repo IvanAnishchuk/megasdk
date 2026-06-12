@@ -351,8 +351,11 @@ target_sources_conditional(SDKlib
 target_include_directories(SDKlib
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # For the top level projects.
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> # For the external projects.
-#    PRIVATE # TODO: Private for SDK core
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/mega/posix> # For the top level projects.
+        $<INSTALL_INTERFACE:include/mega>
+        $<INSTALL_INTERFACE:include/mega/posix>
+        $<$<BOOL:${ENABLE_QT_BINDINGS}>:$<INSTALL_INTERFACE:include/mega/bindings/qt>>
+    PRIVATE # TODO: Private for SDK core
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<$<BOOL:${APPLE}>:${CMAKE_CURRENT_SOURCE_DIR}/include/mega/osx>
         $<$<BOOL:${WIN32}>:${CMAKE_CURRENT_SOURCE_DIR}/include/mega/win32>
@@ -479,3 +482,23 @@ configure_file(
     cmake/modules/sdklib.pc.in
     ${CMAKE_CURRENT_BINARY_DIR}/sdklib.pc @ONLY
     )
+install(TARGETS SDKlib
+    EXPORT "sdklibTargets"
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+install(EXPORT "sdklibTargets"
+    FILE "sdklibTargets.cmake"
+    NAMESPACE MEGA::
+    DESTINATION  "${CMAKE_INSTALL_LIBDIR}/cmake/sdklib"
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sdklibConfig.cmake DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/sdklib")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sdklib.pc DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+install(FILES ${SDKLIB_PUB_HEADERS} ${PROJECT_BINARY_DIR}/mega/config.h
+    include/mega.h include/megaapi_impl.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mega
+)
+install(DIRECTORY include/mega/ include/impl third_party/ccronexpr third_party/evt-tls
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mega
+    FILES_MATCHING PATTERN "*.h"
+)
