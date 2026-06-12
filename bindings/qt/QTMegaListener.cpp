@@ -5,6 +5,8 @@
 
 #include <QCoreApplication>
 
+#include <climits>
+
 using namespace mega;
 using namespace std;
 
