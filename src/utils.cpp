@@ -34,7 +34,7 @@
 #include <unicode/ucol.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
-#include <utf8proc/utf8proc.h>
+#include <utf8proc.h>
 
 #include <cctype>
 #include <iomanip>
