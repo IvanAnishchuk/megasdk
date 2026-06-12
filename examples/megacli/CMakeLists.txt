@@ -27,6 +27,8 @@ endif()
 if(APPLE AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "15.0")
     target_link_options(megacli PRIVATE LINKER:-no_warn_duplicate_libraries)
 endif()
+target_link_libraries(megacli PRIVATE ${readline_LIBRARIES})
+install(TARGETS megacli RUNTIME)
 
 if(TARGET gfxworker)
     add_custom_command(

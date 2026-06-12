@@ -11,7 +11,7 @@ if (HAS_RENAME_FLAGS)
     target_compile_definitions(SDKlib PUBLIC HAS_RENAME_FLAGS)
 endif()
 
-target_include_directories(SDKlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(SDKlib PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_sources(SDKlib PRIVATE utility.cpp)
 

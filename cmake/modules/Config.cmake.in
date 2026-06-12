@@ -2,6 +2,9 @@
 
 include(CMakeFindDependencyMacro)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(cryptopp REQUIRED IMPORTED_TARGET libcryptopp)
+
 include(${CMAKE_CURRENT_LIST_DIR}/sdklibTargets.cmake)
 
 check_required_components(SDKlib)

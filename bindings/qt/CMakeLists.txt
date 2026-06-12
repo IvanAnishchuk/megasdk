@@ -1,15 +1,17 @@
 add_library(SDKQtBindings)
 add_library(MEGA::SDKQtBindings ALIAS SDKQtBindings)
 
-target_sources(SDKQtBindings
-    PRIVATE
+set(SDKLIBQT_HEADERS
     QTMegaEvent.h
     QTMegaGlobalListener.h
     QTMegaListener.h
     QTMegaRequestListener.h
     QTMegaTransferListener.h
     QTMegaApiManager.h
-
+)
+target_sources(SDKQtBindings
+    PRIVATE
+    ${SDKLIBQT_HEADERS}
     QTMegaEvent.cpp
     QTMegaGlobalListener.cpp
     QTMegaListener.cpp
@@ -50,3 +52,5 @@ if(ENABLE_CHATLIB_WERROR)
                                  -Wno-error=deprecated-declarations> # Kept as a warning, do not promote to error.
     )
 endif()
+install(TARGETS SDKQtBindings)
+install(FILES ${SDKLIBQT_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mega/bindings/qt)
