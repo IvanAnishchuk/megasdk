@@ -5,6 +5,8 @@
 
 #include <QCoreApplication>
 
+#include <climits>
+
 using namespace mega;
 
 QTMegaGlobalListener::QTMegaGlobalListener(MegaApi* megaApi, MegaGlobalListener* listener):
