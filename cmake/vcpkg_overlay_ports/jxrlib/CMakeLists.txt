@@ -2,7 +2,7 @@
 # BSD (Same as jxrlib)
 # Based on https://jxrlib.codeplex.com/discussions/440294
 # and modified for vcpkg packaging
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 project(jxrlib C)
 
 # Need shared libs for ABI

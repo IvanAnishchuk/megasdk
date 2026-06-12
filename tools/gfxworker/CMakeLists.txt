@@ -38,6 +38,7 @@ endif()
 target_link_libraries(libgfxworker
     PUBLIC
     MEGA::SDKlib
+    z
 )
 
 if (WIN32)

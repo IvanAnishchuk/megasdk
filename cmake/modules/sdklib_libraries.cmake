@@ -1,9 +1,9 @@
 macro(load_sdklib_libraries)
 
-    target_link_libraries(SDKlib PUBLIC ccronexpr)
-    target_link_libraries(SDKlib PUBLIC csv)
+    target_link_libraries(SDKlib PRIVATE ccronexpr)
+    target_link_libraries(SDKlib PRIVATE csv)
     if(USE_LIBUV AND USE_OPENSSL)
-        target_link_libraries(SDKlib PUBLIC evt-tls)
+        target_link_libraries(SDKlib PRIVATE evt-tls)
     endif()
 
     if(NOT HAVE_GLOB_H AND NOT WIN32)
@@ -109,7 +109,7 @@ macro(load_sdklib_libraries)
 
         find_package(PkgConfig REQUIRED) # For libraries loaded using pkg-config
 
-        pkg_check_modules(cryptopp REQUIRED IMPORTED_TARGET libcrypto++)
+        pkg_check_modules(cryptopp REQUIRED IMPORTED_TARGET libcryptopp)
         target_link_libraries(SDKlib PUBLIC PkgConfig::cryptopp) # TODO: Private for SDK core
 
         pkg_check_modules(sodium REQUIRED IMPORTED_TARGET libsodium)

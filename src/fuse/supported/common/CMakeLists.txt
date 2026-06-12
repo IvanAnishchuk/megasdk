@@ -1,4 +1,4 @@
-target_include_directories(SDKlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(SDKlib PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_sources(SDKlib PRIVATE
                       database_builder.cpp
