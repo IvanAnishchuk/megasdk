@@ -1,6 +1,6 @@
 # Let the SDK know where it can find our headers.
 target_include_directories(SDKlib PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(SDKlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(SDKlib PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Add sources required by libfuse backend.
 target_sources(SDKlib PRIVATE
