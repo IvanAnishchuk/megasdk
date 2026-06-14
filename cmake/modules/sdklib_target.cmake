@@ -437,6 +437,12 @@ target_platform_compile_options(
     TARGET SDKlib
     WINDOWS /W4
     UNIX $<$<CONFIG:Debug>:-ggdb3> -Wall -Wextra -Wconversion
+         # Extra warnings measured to produce zero hits on the SDK core
+         # (see review.md Phase 4). -Wdouble-promotion/-Wformat=2 are clean on
+         # both GCC and Clang; -Wimplicit-fallthrough is clean on GCC but Clang
+         # flags pre-existing unannotated fallthroughs, so gate it to GCC.
+         -Wdouble-promotion -Wformat=2
+         $<$<CXX_COMPILER_ID:GNU>:-Wimplicit-fallthrough>
 )
 
 if(ENABLE_SDKLIB_WERROR)
