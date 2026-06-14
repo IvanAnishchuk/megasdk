@@ -6,6 +6,20 @@ macro(load_sdklib_libraries)
         target_link_libraries(SDKlib PRIVATE evt-tls)
     endif()
 
+    # The public header megaapi_impl.h includes <ccronexpr/ccronexpr.h> and
+    # (under USE_OPENSSL) <evt-tls/evt_tls.h>. These vendored object libraries
+    # are linked PRIVATE so they do not leak into the installed export set, but
+    # in-tree consumers compiling against the SDK's own headers (e.g. test_unit,
+    # test_integration) still need their include dirs. Propagate just the
+    # build-tree include paths PUBLICLY; the installed layout ships these
+    # headers under include/mega/ via SDKlib's INSTALL_INTERFACE.
+    target_include_directories(SDKlib SYSTEM PUBLIC
+        $<BUILD_INTERFACE:$<TARGET_PROPERTY:ccronexpr,INTERFACE_INCLUDE_DIRECTORIES>>)
+    if(USE_LIBUV AND USE_OPENSSL)
+        target_include_directories(SDKlib SYSTEM PUBLIC
+            $<BUILD_INTERFACE:$<TARGET_PROPERTY:evt-tls,INTERFACE_INCLUDE_DIRECTORIES>>)
+    endif()
+
     if(NOT HAVE_GLOB_H AND NOT WIN32)
         target_link_libraries(SDKlib PUBLIC glob)
     endif()
