@@ -24,7 +24,10 @@ if(WIN32)
     )
 endif()
 
-if(ENABLE_JAVA_BINDINGS)
+# PIC is needed when this object library is linked into a shared SDKlib
+# (e.g. ASan-instrumented shared builds emit relocations that require it),
+# not only for the Java bindings.
+if(ENABLE_JAVA_BINDINGS OR BUILD_SHARED_LIBS)
     set_target_properties(ccronexpr PROPERTIES
         POSITION_INDEPENDENT_CODE ON
     )
