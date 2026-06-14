@@ -13,6 +13,16 @@ endif()
 
 target_include_directories(SDKlib PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
+# The platform-agnostic FUSE integration tests (e.g. common_tests.cpp) include
+# <mega/fuse/platform/platform.h>, which lives in this platform-specific root.
+# The darwin/windows roots reach test_integration by being PUBLIC on SDKlib, but
+# this one must stay PRIVATE: install(EXPORT sdklibTargets) rejects a bare
+# source-tree path in SDKlib's public interface. So hand the root to the test
+# target directly instead of leaking it through SDKlib's export interface.
+if (TARGET test_integration)
+    target_include_directories(test_integration PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
 target_sources(SDKlib PRIVATE utility.cpp)
 
 add_subdirectory(mega)
