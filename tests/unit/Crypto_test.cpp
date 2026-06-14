@@ -16,9 +16,9 @@
  * program.
  */
 
-#include "../src/crypto/sodium.cpp"
 #include "gtest/gtest.h"
 #include "mega.h"
+#include "mega/crypto/sodium.h"
 
 #include <cryptopp/hex.h>
 
