@@ -91,6 +91,18 @@ target_link_libraries(test_unit PRIVATE
                                 MEGA::SDKlib
 )
 
+# Crypto_test.cpp pulls a libsodium inline (crypto_scalarmult_base) in via the
+# SDK headers. sodium is linked PRIVATE to SDKlib, so with a shared SDKlib it is
+# not propagated transitively — declare the direct dependency explicitly.
+# (System-deps build; the vcpkg path would use unofficial-sodium::sodium.)
+if(NOT VCPKG_ROOT)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(unit_sodium REQUIRED IMPORTED_TARGET libsodium)
+    target_link_libraries(test_unit PRIVATE PkgConfig::unit_sodium)
+else()
+    target_link_libraries(test_unit PRIVATE unofficial-sodium::sodium)
+endif()
+
 # Link with the common interface library for the tests.
 target_link_libraries(test_unit PRIVATE MEGA::test_tools MEGA::test_common)
 
