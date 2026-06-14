@@ -92,6 +92,12 @@ include(file_service/file_service.cmake)
 # Link with SDKlib
 target_link_libraries(test_integration PRIVATE MEGA::SDKlib)
 
+# easy_curl.cpp uses libcurl directly. SDKlib links curl PRIVATE, so with a
+# shared SDKlib it is not propagated transitively — declare the direct
+# dependency explicitly.
+find_package(CURL REQUIRED)
+target_link_libraries(test_integration PRIVATE CURL::libcurl)
+
 # Link with the common and tools interface libraries for the tests.
 target_link_libraries(test_integration
     PRIVATE
