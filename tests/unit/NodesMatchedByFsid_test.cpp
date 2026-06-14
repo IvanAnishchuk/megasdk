@@ -66,12 +66,30 @@ FileFingerprint genLightFingerprint(const m_time_t mtime = SIMPLE_MTIME,
  * @param fileFingerprint The fingerprint of the file.
  * @return A NodeMatchByFSIDAttributes struct with the assigned fields.
  */
+// Long-lived defaults: NodeMatchByFSIDAttributes stores reference members, so
+// whatever they bind to must outlive the returned struct. Temporaries used as
+// default arguments would leave those references dangling once genMatchAttributes
+// returns (ASan stack-use-after-scope). Back the defaults with function-local
+// statics so the references stay valid; callers passing named locals are fine
+// because those locals outlive the comparison.
+const fsfp_t& defaultFilesystemFingerprint()
+{
+    static const fsfp_t value{1, "UUID"};
+    return value;
+}
+
+const FileFingerprint& defaultLightFingerprint()
+{
+    static const FileFingerprint value = genLightFingerprint();
+    return value;
+}
+
 NodeMatchByFSIDAttributes
     genMatchAttributes(const nodetype_t nodeType = FILENODE,
-                       const fsfp_t& filesystemFingerprint = {1, "UUID"},
+                       const fsfp_t& filesystemFingerprint = defaultFilesystemFingerprint(),
                        const handle userHandle = COMMON_USER_OWNER,
-                       const FileFingerprint& fileFingerprint = genLightFingerprint(),
-                       const FileFingerprint& realFingerprint = genLightFingerprint())
+                       const FileFingerprint& fileFingerprint = defaultLightFingerprint(),
+                       const FileFingerprint& realFingerprint = defaultLightFingerprint())
 {
     return NodeMatchByFSIDAttributes{nodeType,
                                      filesystemFingerprint,
