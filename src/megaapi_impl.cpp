@@ -84,7 +84,7 @@
 #include <openssl/rand.h>
 #endif
 
-#include <zxcvbn/zxcvbn.h>
+#include <zxcvbn.h>
 
 // FUSE
 #include <mega/fuse/common/mount_event_type.h>
