@@ -352,11 +352,11 @@ target_include_directories(SDKlib
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # For the top level projects.
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/mega/posix> # For the top level projects.
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Generated mega/config.h — in-tree consumers must see it before any installed copy.
         $<INSTALL_INTERFACE:include/mega>
         $<INSTALL_INTERFACE:include/mega/posix>
         $<$<BOOL:${ENABLE_QT_BINDINGS}>:$<INSTALL_INTERFACE:include/mega/bindings/qt>>
     PRIVATE # TODO: Private for SDK core
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<$<BOOL:${APPLE}>:${CMAKE_CURRENT_SOURCE_DIR}/include/mega/osx>
         $<$<BOOL:${WIN32}>:${CMAKE_CURRENT_SOURCE_DIR}/include/mega/win32>
         $<$<BOOL:${ANDROID}>:${CMAKE_CURRENT_SOURCE_DIR}/include/mega/android> # Before posix.
