@@ -106,6 +106,24 @@ else()
     target_link_libraries(test_unit PRIVATE unofficial-sodium::sodium)
 endif()
 
+# Sqlite_test.cpp drives the sqlite3 C API directly (sqlite3_exec et al.).
+# sqlite3 is linked PRIVATE to SDKlib, so with a shared SDKlib it is not
+# propagated transitively — declare the direct dependency explicitly. Mirror
+# the two-branch sqlite3 pattern used in tests/integration/CMakeLists.txt.
+if(VCPKG_ROOT)
+    if(IOS)
+        find_package(SQLite3 REQUIRED)
+        target_link_libraries(test_unit PRIVATE SQLite::SQLite3)
+    else()
+        find_package(unofficial-sqlite3 REQUIRED)
+        target_link_libraries(test_unit PRIVATE unofficial::sqlite3::sqlite3)
+    endif()
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(sqlite3_ut REQUIRED IMPORTED_TARGET sqlite3)
+    target_link_libraries(test_unit PRIVATE PkgConfig::sqlite3_ut)
+endif()
+
 # Link with the common interface library for the tests.
 target_link_libraries(test_unit PRIVATE MEGA::test_tools MEGA::test_common)
 
