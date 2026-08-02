@@ -3713,8 +3713,8 @@ bool foldCaseAccentEqual(uint32_t codePoint1, uint32_t codePoint2, bool stripAcc
     }
 
     // Fallback if fold case and accent above has errors, better than we couldn't search
-    return u_foldCase(codePoint1, U_FOLD_CASE_DEFAULT) ==
-           u_foldCase(codePoint1, U_FOLD_CASE_DEFAULT);
+    return u_foldCase(static_cast<UChar32>(codePoint1), U_FOLD_CASE_DEFAULT) ==
+           u_foldCase(static_cast<UChar32>(codePoint2), U_FOLD_CASE_DEFAULT);
 }
 
 // This code has been taken from sqlite repository (https://www.sqlite.org/src/file?name=ext/icu/icu.c)
