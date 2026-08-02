@@ -903,6 +903,8 @@ public:
                 expectedRunState = MegaSync::RUNSTATE_DISABLED;
                 break;
             }
+            default:
+                FAIL() << "Unhandled StopAction";
         }
         ASSERT_EQ(getSyncRunState(), std::optional{expectedRunState});
 

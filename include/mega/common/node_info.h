@@ -15,12 +15,12 @@ namespace common
 struct NodeInfo
 {
     NodeHandle mHandle;
-    bool mIsDirectory;
-    m_time_t mModified;
+    bool mIsDirectory = false;
+    m_time_t mModified = 0;
     std::string mName;
     NodeHandle mParentHandle;
-    accesslevel_t mPermissions;
-    m_off_t mSize;
+    accesslevel_t mPermissions = ACCESS_UNKNOWN;
+    m_off_t mSize = 0;
 }; // NodeInfo
 
 } // common

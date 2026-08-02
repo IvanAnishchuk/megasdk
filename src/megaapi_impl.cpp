@@ -29984,11 +29984,11 @@ void MegaApiImpl::getDiscountCodeInformation(const char* discountCode,
 
         client->getDiscountCodeInformation(
             code,
-            [this, code, request](const Error& e, DiscountCodeInfoExtended&& info)
+            [this, request](const Error& e, DiscountCodeInfoExtended&& info)
             {
                 if (!e)
                 {
-                    assert(info.alfanumDiscountCode == code);
+                    assert(info.alfanumDiscountCode == request->getText());
                     request->setMegaDiscountCodeInfo(
                         std::make_unique<MegaDiscountCodeInfoPrivate>(std::move(info)));
                 }
@@ -34516,10 +34516,19 @@ bool MegaTCPServer::start(int newPort, bool newLocalOnly)
 #ifdef ENABLE_EVT_TLS
 int MegaTCPServer::uv_tls_writer(evt_tls_t *evt_tls, void *bfr, int sz)
 {
+    if (sz < 0)
+    {
+        // A negative size would wrap around in uv_buf_t::len and make uv_write read
+        // far past the buffer. Drop it the same way the non-writable path does.
+        LOG_err << "uv_tls_writer called with a negative size: " << sz;
+        delete [] (char*)bfr;
+        return 0;
+    }
+
     int rv = 0;
     uv_buf_t b;
     b.base = (char*)bfr;
-    b.len = sz;
+    b.len = static_cast<size_t>(sz);
 
     MegaTCPContext *tcpctx = (MegaTCPContext*)evt_tls->data;
     assert(tcpctx != NULL);
@@ -34897,9 +34906,16 @@ void MegaTCPServer::evt_on_rd(evt_tls_t *evt_tls, char *bfr, int sz)
     MegaTCPContext *tcpctx = (MegaTCPContext*)evt_tls->data;
     assert(tcpctx != NULL);
 
+    if (sz < 0)
+    {
+        // A negative size would wrap around in uv_buf_t::len; refuse to hand it on.
+        LOG_err << "evt_on_rd called with a negative size: " << sz;
+        return;
+    }
+
     uv_buf_t data;
     data.base = bfr;
-    data.len = sz;
+    data.len = static_cast<size_t>(sz);
 
     if (!tcpctx->invalid)
     {
