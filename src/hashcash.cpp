@@ -30,7 +30,8 @@ constexpr std::size_t kTokenBytes = 48;
 constexpr std::size_t kPrefixBytes = 4;
 constexpr std::size_t kRepeat = 262144; // 12MB / 48B
 constexpr std::size_t kBufSize = kPrefixBytes + kRepeat * kTokenBytes;
-constexpr std::size_t kSha256Block = CryptoPP::SHA256::BLOCKSIZE;
+// Only referenced by an assert, so it disappears under NDEBUG.
+[[maybe_unused]] constexpr std::size_t kSha256Block = CryptoPP::SHA256::BLOCKSIZE;
 
 #ifndef NDEBUG
 constexpr std::chrono::milliseconds kTtl{60000};

@@ -75,7 +75,7 @@ protected:
             // which represents blank value for such attributes As an example - for Camera folder
             // and Chat folder one can pass UNDEF as third alternative parameter.
             removeAttribute = (ec == API_ENOENT) ||
-                              (alternatives.size() == 3 && originalValue == alternatives[2]);
+                              (alternatives.size() == 3 && originalValue == alternatives.back());
         }
 
         ASSERT_GE(alternatives.size(), 2u);
