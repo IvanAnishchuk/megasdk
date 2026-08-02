@@ -79,7 +79,18 @@ void ScStreamingParser::init()
                              mTreeFilters.start(mFiltersChain,
                                                 [this]()
                                                 {
-                                                    checkActionPacket();
+                                                    // TreeFilters' pre-action is a
+                                                    // std::function<void()>, so there is no way to
+                                                    // pause the parser from here. Report it rather
+                                                    // than drop it silently.
+                                                    if (!checkActionPacket())
+                                                    {
+                                                        LOG_err
+                                                            << "Action packets must wait for the "
+                                                               "cs response, but the tree "
+                                                               "pre-action cannot pause the parser";
+                                                        assert(false);
+                                                    }
                                                 });
                          }
 
@@ -130,7 +141,11 @@ void ScStreamingParser::init()
                      {
                          if (mActionName == 0)
                          {
-                             checkActionPacket();
+                             if (!checkActionPacket())
+                             {
+                                 releaseLock();
+                                 return JSONSplitter::CallbackResult::PAUSED;
+                             }
                              mLastAPDeletedNode.reset();
                          }
                          else if (mTreeFilters.isStarted())
@@ -141,7 +156,11 @@ void ScStreamingParser::init()
                          }
                          else
                          {
-                             checkActionPacket();
+                             if (!checkActionPacket())
+                             {
+                                 releaseLock();
+                                 return JSONSplitter::CallbackResult::PAUSED;
+                             }
                              mLastAPDeletedNode =
                                  mClient.sc_procActionPacketWithoutCommonTags(*json,
                                                                               mActionName,
@@ -333,15 +352,15 @@ void ScStreamingParser::releaseLock()
     }
 }
 
-void ScStreamingParser::checkActionPacket()
+bool ScStreamingParser::checkActionPacket()
 {
     // 'st' is not present
     if (mSeqTag.empty())
     {
-        const bool ret =
-            mClient.sc_checkActionPacketWithoutSt(mActionName, mLastAPDeletedNode.get());
-        assert(ret);
+        return mClient.sc_checkActionPacketWithoutSt(mActionName, mLastAPDeletedNode.get());
     }
+
+    return true;
 }
 
 bool ScStreamingParser::isnCanBeProcessed()

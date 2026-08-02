@@ -83,7 +83,10 @@ private:
     void acquireLock();
     void releaseLock();
 
-    void checkActionPacket();
+    // Returns false when action packet processing must stop until the cs response
+    // delivers the next sequence tag. Callers that can pause the parser must return
+    // JSONSplitter::CallbackResult::PAUSED in that case.
+    bool checkActionPacket();
     bool isnCanBeProcessed();
     bool isDuringMoveOperation();
 };
