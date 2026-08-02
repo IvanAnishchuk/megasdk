@@ -124,6 +124,14 @@ else()
     target_link_libraries(test_unit PRIVATE PkgConfig::sqlite3_ut)
 endif()
 
+# utils_test.cpp derives from CurlHttpIO, whose in-class member initializer
+# takes the address of curl_slist_free_all (mega/posix/meganet.h). curl is
+# linked PRIVATE to SDKlib, so with a shared SDKlib it is not propagated
+# transitively — declare the direct dependency explicitly, as
+# tests/integration/CMakeLists.txt already does for easy_curl.cpp.
+find_package(CURL REQUIRED)
+target_link_libraries(test_unit PRIVATE CURL::libcurl)
+
 # Link with the common interface library for the tests.
 target_link_libraries(test_unit PRIVATE MEGA::test_tools MEGA::test_common)
 
