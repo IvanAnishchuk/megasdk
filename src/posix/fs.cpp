@@ -872,7 +872,7 @@ bool PosixFileAccess::fopen(const LocalPath& f,
     }();
 
     errorcode = 0;
-    fd = open(fstr.c_str(), openFlags, defaultfilepermissions);
+    fd = open(fstr.c_str(), openFlags, static_cast<mode_t>(defaultfilepermissions));
     if (fd < 0)
     {
         errorcode = errno; // streaming may set errno
@@ -1239,7 +1239,9 @@ bool PosixFileSystemAccess::copylocal(const LocalPath& oldname, const LocalPath&
     {
         LOG_verbose << "Copying via read/write";
         mode_t mode = umask(0);
-        if ((tfd = open(newnamestr.c_str(), O_WRONLY | O_CREAT | O_TRUNC, defaultfilepermissions)) >= 0)
+        if ((tfd = open(newnamestr.c_str(),
+                        O_WRONLY | O_CREAT | O_TRUNC,
+                        static_cast<mode_t>(defaultfilepermissions))) >= 0)
         {
             umask(mode);
             while (((t = read(sfd, buf, sizeof buf)) > 0) &&
