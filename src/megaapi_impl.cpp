@@ -16937,7 +16937,7 @@ void MegaApiImpl::getua_completion(byte* data, unsigned len, attr_t type, MegaRe
         break;
 
         // byte arrays with possible nulls in the middle --> to Base64
-        case MegaApi::USER_ATTR_ED25519_PUBLIC_KEY: // fall-through
+        case MegaApi::USER_ATTR_ED25519_PUBLIC_KEY:
         {
             if (request->getFlag()) // asking for the fingerprint
             {
@@ -16945,8 +16945,8 @@ void MegaApiImpl::getua_completion(byte* data, unsigned len, attr_t type, MegaRe
                 request->setPassword(fingerprint.c_str());
                 break;
             }
+            [[fallthrough]];
         }
-        // fall through
         case MegaApi::USER_ATTR_CU25519_PUBLIC_KEY:
         case MegaApi::USER_ATTR_SIG_RSA_PUBLIC_KEY:
         case MegaApi::USER_ATTR_SIG_CU255_PUBLIC_KEY:
@@ -30294,6 +30294,11 @@ void RequestQueue::push(std::unique_ptr<MegaRequestPrivate> request)
 {
     std::lock_guard<std::mutex> guard(mutex);
 
+    // get() then release(), deliberately: push_back() may throw, and until it
+    // succeeds the unique_ptr must keep ownership. Collapsing this into
+    // push_back(request.release()) would leak on a throwing push_back, because
+    // release() is evaluated first. clang-tidy's bugprone-unused-return-value
+    // flags the discarded release() here; it is a false positive.
     requests.push_back(request.get());
 
     request.release();
