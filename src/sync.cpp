@@ -2549,7 +2549,13 @@ bool Sync::checkLocalPathForMovesRenames(SyncRow& row, SyncRow& parentRow, SyncP
                         }
                     };
 
-                    syncs.queueClient(std::move(simultaneousMoveReplacedNodeToDebris));
+                    // Deliberately not queued here: both the rename and the move
+                    // lambdas below capture this and run it inside their own client
+                    // callback, so the debris move shares their batch -- which is what
+                    // "simultaneous" means for it. Queueing it here moved it into a
+                    // separate batch AND left the captured copies moved-from, so the
+                    // `if (simultaneousMoveReplacedNodeToDebris)` guards below could
+                    // never fire.
 
                     // For the normal move case, we would have made this (empty) row.syncNode specifically for the move
                     // But for this case we are reusing this existing LocalNode and it may be a folder with children
@@ -6052,7 +6058,8 @@ void Syncs::importSyncConfigs(const char* data, std::function<void(error)> compl
     if (context->mDeviceHash.empty())
     {
         LOG_err << "Failed to get Device ID while importing sync configs";
-        completion(API_EARGS);
+        // completion was moved into the context above; call it through there.
+        context->mCompletion(API_EARGS);
         return;
     }
 
@@ -6955,7 +6962,8 @@ std::function<void(MegaClient&, TransferDbCommitter&)>
                                               [&backupId](const pair<handle, int>& sdsRequest)
                                               {
                                                   return sdsRequest.first == backupId;
-                                              }));
+                                              }),
+                               remainingSds.end());
             // SDS values for full-syncs (account root node) are set in the *!sds attribute
             // instead of as an attribute of the backup/sync root node.
             if (mc.mNodeManager.getRootNodeFiles().eq(remoteNode))
