@@ -21,7 +21,16 @@ target_sources(SDKQtBindings
 )
 
 # Activate the meta-object code generator for Qt.
-set_target_properties(SDKQtBindings PROPERTIES AUTOMOC ON)
+# VERSION matches SDKlib (see sdklib_target.cmake), so this ships a versioned
+# SONAME -- libSDKQtBindings.so.<version> plus the bare .so dev symlink. Without
+# it a consumer records a bare NEEDED libSDKQtBindings.so, which any
+# system-installed copy satisfies equally well, and that copy drags in whatever
+# libSDKlib version it was built against. Only search order kept the right one
+# winning, so a stripped RUNPATH could put two SDK copies in one address space.
+set_target_properties(SDKQtBindings PROPERTIES
+    AUTOMOC ON
+    VERSION ${PROJECT_VERSION}
+)
 
 ## Required for the Qt generated files, to be able to include other headers
 target_include_directories(SDKQtBindings
@@ -53,5 +62,12 @@ if(ENABLE_CHATLIB_WERROR)
                                  -Wno-error=deprecated-declarations> # Kept as a warning, do not promote to error.
     )
 endif()
-install(TARGETS SDKQtBindings)
+# In the same export set as SDKlib, so find_package(sdklib) hands consumers a
+# real MEGA::SDKQtBindings target instead of them linking it by bare name.
+# Qt6::Core and MEGA::SDKlib are both PRIVATE, so with a shared library they do
+# not leak into the export interface.
+install(TARGETS SDKQtBindings
+    EXPORT "sdklibTargets"
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 install(FILES ${SDKLIBQT_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mega/bindings/qt)
