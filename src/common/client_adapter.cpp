@@ -1259,7 +1259,8 @@ void ClientAdapter::touch(TouchCallback callback,
         auto result =
           mClient.setattr(node,
                           attr_map('c', std::move(attribute)),
-                          std::bind(std::move(callback),
+                          // Not moved: the failure path below still calls it.
+                          std::bind(callback,
                                     std::placeholders::_2),
                           false);
 
