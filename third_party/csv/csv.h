@@ -2209,8 +2209,8 @@ using std::operator<<;
 // Clang, GNUC, MSVC warning suppression macros:
 
 #if defined(__clang__)
-# pragma clang diagnostic ignored "-Wreserved-user-defined-literal"
 # pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wreserved-user-defined-literal"
 # pragma clang diagnostic ignored "-Wuser-defined-literals"
 #elif defined(__GNUC__)
 # pragma  GCC  diagnostic push
