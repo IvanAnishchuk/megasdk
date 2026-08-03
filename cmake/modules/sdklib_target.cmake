@@ -451,11 +451,17 @@ target_platform_compile_options(
     WINDOWS /W4
     UNIX $<$<CONFIG:Debug>:-ggdb3> -Wall -Wextra -Wconversion
          # Extra warnings measured to produce zero hits on the SDK core
-         # (see review.md Phase 4). -Wdouble-promotion/-Wformat=2 are clean on
-         # both GCC and Clang; -Wimplicit-fallthrough is clean on GCC but Clang
-         # flags pre-existing unannotated fallthroughs, so gate it to GCC.
-         -Wdouble-promotion -Wformat=2
-         $<$<CXX_COMPILER_ID:GNU>:-Wimplicit-fallthrough>
+         # (see review.md Phase 4), on BOTH GCC and Clang.
+         #
+         # -Wimplicit-fallthrough was GCC-only until the fall-through sites were
+         # annotated: GCC's implementation accepts a `// fall through` comment,
+         # Clang's only accepts [[fallthrough]], so the comments the code already
+         # had satisfied one compiler and not the other. Gating it to GCC meant
+         # Clang reported zero because it was not looking. The sites now carry
+         # [[fallthrough]] (or a break, where they fell into an empty default),
+         # so the flag is enforced on both. Re-measure with
+         # ~/.claude/scripts/cc_flag_audit.py before adding any flag here.
+         -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough
 )
 
 if(ENABLE_SDKLIB_WERROR)
