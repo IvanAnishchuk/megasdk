@@ -2346,7 +2346,7 @@ void MegaClient::exec()
                                                                         req->httpstatus);
 
                     // no retry -> fall through
-                    // fall through
+                    [[fallthrough]];
                 case REQ_SUCCESS:
                 {
                     restag = it->first;
@@ -2382,7 +2382,7 @@ void MegaClient::exec()
                         break;
                     }
                     // no retry -> fall through
-                    // fall through
+                    [[fallthrough]];
                 case REQ_INFLIGHT:
                     if (req->maxbt.nextset() && req->maxbt.armed())
                     {
@@ -2396,7 +2396,7 @@ void MegaClient::exec()
                         pendinghttp.erase(it++);
                         break;
                     }
-                    // fall through
+                    [[fallthrough]];
                 default:
                     it++;
                 }
@@ -2610,7 +2610,7 @@ void MegaClient::exec()
 
                         LOG_warn << "Timeout getting file attr";
                         // timeout!
-                        // fall through
+                        [[fallthrough]];
                     case REQ_FAILURE:
                         LOG_warn << "Error getting file attr";
                         app->notify_network_activity(NetworkActivityChannel::CS,
@@ -2623,6 +2623,7 @@ void MegaClient::exec()
                         fc->urltime = 0;
                         fc->req.disconnect();
                         fc->req.status = REQ_PREPARED;
+                        break;
                     default:
                         ;
                 }
@@ -2842,7 +2843,7 @@ void MegaClient::exec()
                             }
                         }
 
-                    // fall through
+                    [[fallthrough]];
                     case REQ_FAILURE:
                         if (pendingcs->httpstatus == 402)
                         {
@@ -2943,6 +2944,7 @@ void MegaClient::exec()
 
                         // the in-progress request will be resent, unchanged (for idempotence), when we are ready again.
                         reqs.inflightFailure(reason);
+                        break;
 
                     default:
                         ;
@@ -3220,7 +3222,7 @@ void MegaClient::exec()
                     break;
                 }
 
-                // fall through
+                [[fallthrough]];
             case REQ_FAILURE:
                 if (pendingscUserAlerts->httpstatus == 200)
                 {
@@ -5344,7 +5346,7 @@ bool MegaClient::procsc(JSON& json)
                         insca = true;
                         break;
                     }
-                    // fall through
+                    [[fallthrough]];
                 default:
                     if (!json.storeobject())
                     {

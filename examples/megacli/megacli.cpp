@@ -2860,7 +2860,7 @@ public:
                         }
                         break;
                     }
-                    // fall-through
+                    [[fallthrough]];
 
                 default:
                     json.storeobject();

@@ -256,7 +256,8 @@ static int evt__tls__op(evt_tls_t *conn, enum tls_op_type op, void *buf, size_t 
                 break;
             }
             // fall through to process possible data queued after the handshake
-        } // fall-through
+            [[fallthrough]];
+        }
 
         case EVT_TLS_OP_READ: {
             r = SSL_read(conn->ssl, tbuf, sizeof(tbuf));

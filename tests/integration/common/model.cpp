@@ -180,6 +180,7 @@ auto Model::DirectoryNode::from(const fs::path& path) -> NodePtr
                 break;
             case fs::file_type::regular:
                 directory->add(FileNode::from(i->path()));
+                break;
             default:
                 break;
         }

@@ -2853,7 +2853,7 @@ bool UserAlerts::procsc_useralert(JSON& jsonsc)
                 break;
             }
 
-            // fall through
+            [[fallthrough]];
         default:
             assert(false);
             if (!jsonsc.storeobject())
