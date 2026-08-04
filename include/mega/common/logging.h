@@ -5,7 +5,7 @@
 #include <mega/logging.h>
 
 // Keep things DRY.
-#define Log1(logger, format, severity) \
+#define Log1(logger, format, severity) do \
 { \
     if (!(logger).masked((severity))) \
         (logger).log(::mega::log_file_leafname(__FILE__), \
