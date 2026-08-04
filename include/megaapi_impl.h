@@ -6161,7 +6161,7 @@ public:
     void setRestrictedMode(int mode);
     int getRestrictedMode();
     bool isHandleAllowed(handle h);
-    void clearAllowedHandles();
+    virtual void clearAllowedHandles();
     char* getLink(MegaNode *node, std::string protocol = "http");
     bool isCurrentThread() {
         return thread->isCurrentThread();
@@ -6328,13 +6328,13 @@ protected:
     bool subtitlesSupportEnabled;
 
     //virtual methods:
-    virtual void processReceivedData(MegaTCPContext* tcpctx, ssize_t nread, const uv_buf_t* buf);
-    virtual void processAsyncEvent(MegaTCPContext* tcpctx);
-    virtual MegaTCPContextPtr initializeContext(uv_stream_t* server_handle);
-    virtual void processWriteFinished(MegaTCPContext* tcpctx, int status);
-    virtual void processOnAsyncEventClose(MegaTCPContext* tcpctx);
-    virtual bool respondNewConnection(MegaTCPContext* tcpctx);
-    virtual void processOnExitHandleClose(MegaTCPServer* tcpServer);
+    virtual void processReceivedData(MegaTCPContext* tcpctx, ssize_t nread, const uv_buf_t* buf) override;
+    virtual void processAsyncEvent(MegaTCPContext* tcpctx) override;
+    virtual MegaTCPContextPtr initializeContext(uv_stream_t* server_handle) override;
+    virtual void processWriteFinished(MegaTCPContext* tcpctx, int status) override;
+    virtual void processOnAsyncEventClose(MegaTCPContext* tcpctx) override;
+    virtual bool respondNewConnection(MegaTCPContext* tcpctx) override;
+    virtual void processOnExitHandleClose(MegaTCPServer* tcpServer) override;
 
 
     // HTTP parser callback
@@ -6372,7 +6372,7 @@ public:
     virtual ~MegaHTTPServer();
     char *getWebDavLink(MegaNode *node);
 
-    void clearAllowedHandles();
+    void clearAllowedHandles() override;
     bool isHandleWebDavAllowed(handle h);
     set<handle> getAllowedWebDavHandles();
     void removeAllowedWebDavHandle(MegaHandle handle);
@@ -6486,13 +6486,13 @@ protected:
 
 
     //virtual methods:
-    virtual void processReceivedData(MegaTCPContext *tcpctx, ssize_t nread, const uv_buf_t * buf);
-    virtual void processAsyncEvent(MegaTCPContext *tcpctx);
-    virtual MegaTCPContextPtr initializeContext(uv_stream_t* server_handle);
-    virtual void processWriteFinished(MegaTCPContext* tcpctx, int status);
-    virtual void processOnAsyncEventClose(MegaTCPContext* tcpctx);
-    virtual bool respondNewConnection(MegaTCPContext* tcpctx);
-    virtual void processOnExitHandleClose(MegaTCPServer* tcpServer);
+    virtual void processReceivedData(MegaTCPContext *tcpctx, ssize_t nread, const uv_buf_t * buf) override;
+    virtual void processAsyncEvent(MegaTCPContext *tcpctx) override;
+    virtual MegaTCPContextPtr initializeContext(uv_stream_t* server_handle) override;
+    virtual void processWriteFinished(MegaTCPContext* tcpctx, int status) override;
+    virtual void processOnAsyncEventClose(MegaTCPContext* tcpctx) override;
+    virtual bool respondNewConnection(MegaTCPContext* tcpctx) override;
+    virtual void processOnExitHandleClose(MegaTCPServer* tcpServer) override;
 
 public:
 
@@ -6520,13 +6520,13 @@ class MegaFTPDataServer: public MegaTCPServer
 protected:
 
     //virtual methods:
-    virtual void processReceivedData(MegaTCPContext *tcpctx, ssize_t nread, const uv_buf_t * buf);
-    virtual void processAsyncEvent(MegaTCPContext *tcpctx);
-    virtual MegaTCPContextPtr initializeContext(uv_stream_t* server_handle);
-    virtual void processWriteFinished(MegaTCPContext* tcpctx, int status);
-    virtual void processOnAsyncEventClose(MegaTCPContext* tcpctx);
-    virtual bool respondNewConnection(MegaTCPContext* tcpctx);
-    virtual void processOnExitHandleClose(MegaTCPServer* tcpServer);
+    virtual void processReceivedData(MegaTCPContext *tcpctx, ssize_t nread, const uv_buf_t * buf) override;
+    virtual void processAsyncEvent(MegaTCPContext *tcpctx) override;
+    virtual MegaTCPContextPtr initializeContext(uv_stream_t* server_handle) override;
+    virtual void processWriteFinished(MegaTCPContext* tcpctx, int status) override;
+    virtual void processOnAsyncEventClose(MegaTCPContext* tcpctx) override;
+    virtual bool respondNewConnection(MegaTCPContext* tcpctx) override;
+    virtual void processOnExitHandleClose(MegaTCPServer* tcpServer) override;
 
     void sendNextBytes(MegaFTPDataContext *ftpdatactx);
 
