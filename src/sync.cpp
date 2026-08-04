@@ -6164,7 +6164,7 @@ bool Syncs::importSyncConfig(JSON& reader, SyncConfig& config)
         {
             changeMethod = std::move(value);
         }
-        if (key == TYPE_LOCAL_PATH)
+        else if (key == TYPE_LOCAL_PATH)
         {
             localPath = std::move(value);
         }
