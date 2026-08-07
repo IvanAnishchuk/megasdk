@@ -14,6 +14,8 @@
 #include <mega/fuse/common/mount_result.h>
 #include <mega/fuse/common/service.h>
 
+using namespace std;
+
 // If running in Jenkins, we use its working folder.  But for local manual testing, use a convenient location
 std::string getLocalTestFolder()
 {
@@ -689,8 +691,6 @@ int main (int argc, char *argv[])
 /*
 **  TestFS implementation
 */
-
-using namespace std;
 
 fs::path TestFS::GetBaseFolder()
 {

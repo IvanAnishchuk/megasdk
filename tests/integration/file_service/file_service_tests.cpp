@@ -2353,10 +2353,10 @@ TEST_F(FileServiceTests, read_jump_backwards_succeeds)
             options.mJumpBackwardAlignment = 0;
 
             // Don't begin a large read's range earlier than specified.
-            options.mJumpBackwardDistance = chrono::milliseconds{0};
+            options.mJumpBackwardDistance = std::chrono::milliseconds{0};
 
             // Consider any read more than 3000ms ahead to be a "jump."
-            options.mJumpForwardDistance = chrono::milliseconds{3000};
+            options.mJumpForwardDistance = std::chrono::milliseconds{3000};
 
             // Consider reads larger than 64KiB "large."
             options.mImmediateDownloadThreshold = 1ul << 16;
@@ -2433,10 +2433,10 @@ TEST_F(FileServiceTests, read_jump_forward_succeeds)
             options.mJumpBackwardAlignment = 0;
 
             // Don't begin a large read's range earlier than specified.
-            options.mJumpBackwardDistance = chrono::milliseconds{0};
+            options.mJumpBackwardDistance = std::chrono::milliseconds{0};
 
             // Consider any read more than 30ms ahead to be a "jump."
-            options.mJumpForwardDistance = chrono::milliseconds{30};
+            options.mJumpForwardDistance = std::chrono::milliseconds{30};
 
             // Consider reads larger than 64KiB "large."
             options.mImmediateDownloadThreshold = 1ul << 16;
@@ -2512,7 +2512,7 @@ TEST_F(FileServiceTests, read_large_succeeds)
             options.mJumpBackwardAlignment = 0;
 
             // Don't begin the range earlier than specified.
-            options.mJumpBackwardDistance = chrono::milliseconds{0};
+            options.mJumpBackwardDistance = std::chrono::milliseconds{0};
 
             // Consider reads larger than 128K as "large."
             options.mImmediateDownloadThreshold = 1ul << 17;
@@ -2551,7 +2551,7 @@ TEST_F(FileServiceTests, read_large_with_alignment_succeeds)
 
             // Align to a 64K boundary.
             options.mJumpBackwardAlignment = 16;
-            options.mJumpBackwardDistance = chrono::milliseconds{0};
+            options.mJumpBackwardDistance = std::chrono::milliseconds{0};
 
             // Consider reads larger than 128K as "large."
             options.mImmediateDownloadThreshold = 1ul << 17;

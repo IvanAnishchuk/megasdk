@@ -20,7 +20,6 @@
 #include <vector>
 
 using namespace ::mega;
-using namespace ::std;
 
 std::string logTime();
 void WaitMillisec(unsigned n);
@@ -299,7 +298,7 @@ public:
 #ifdef ENABLE_SYNC
 
 template<typename T>
-using shared_promise = std::shared_ptr<promise<T>>;
+using shared_promise = std::shared_ptr<std::promise<T>>;
 
 using PromiseBoolSP     = shared_promise<bool>;
 using PromiseErrorSP    = shared_promise<Error>;
@@ -667,7 +666,7 @@ struct StandardClient : public MegaApp
 
     static mutex om;
     bool logcb = false;
-    chrono::steady_clock::time_point lastcb = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point lastcb = std::chrono::steady_clock::now();
 
     string lp(LocalNode* ln);
 
@@ -785,15 +784,15 @@ public:
     static bool debugging;  // turn this on to prevent the main thread timing out when stepping in the MegaClient
 
     template <class PROMISE_VALUE>
-    future<PROMISE_VALUE> thread_do(std::function<void(MegaClient&, shared_promise<PROMISE_VALUE>)> f, string sf, int sl)
+    std::future<PROMISE_VALUE> thread_do(std::function<void(MegaClient&, shared_promise<PROMISE_VALUE>)> f, string sf, int sl)
     {
-        unique_lock<mutex> guard(functionDoneMutex);
-        std::shared_ptr<promise<PROMISE_VALUE>> promiseSP(new promise<PROMISE_VALUE>());
+        std::unique_lock<std::mutex> guard(functionDoneMutex);
+        std::shared_ptr<std::promise<PROMISE_VALUE>> promiseSP(new std::promise<PROMISE_VALUE>());
         nextfunctionMC = [this, promiseSP, f](){ f(this->client, promiseSP); };
         nextfunctionMC_sourcefile = sf;
         nextfunctionMC_sourceline = sl;
         waiter->notify();
-        while (!functionDone.wait_until(guard, chrono::steady_clock::now() + chrono::seconds(600), [this]() { return !nextfunctionMC; }))
+        while (!functionDone.wait_until(guard, std::chrono::steady_clock::now() + std::chrono::seconds(600), [this]() { return !nextfunctionMC; }))
         {
             if (!debugging)
             {
@@ -805,15 +804,15 @@ public:
     }
 
     template <class PROMISE_VALUE>
-    future<PROMISE_VALUE> thread_do(std::function<void(StandardClient&, shared_promise<PROMISE_VALUE>)> f, string sf, int sl)
+    std::future<PROMISE_VALUE> thread_do(std::function<void(StandardClient&, shared_promise<PROMISE_VALUE>)> f, string sf, int sl)
     {
-        unique_lock<mutex> guard(functionDoneMutex);
-        std::shared_ptr<promise<PROMISE_VALUE>> promiseSP(new promise<PROMISE_VALUE>());
+        std::unique_lock<std::mutex> guard(functionDoneMutex);
+        std::shared_ptr<std::promise<PROMISE_VALUE>> promiseSP(new std::promise<PROMISE_VALUE>());
         nextfunctionSC_sourcefile = sf;
         nextfunctionSC_sourceline = sl;
         nextfunctionSC = [this, promiseSP, f]() { f(*this, promiseSP); };
         waiter->notify();
-        while (!functionDone.wait_until(guard, chrono::steady_clock::now() + chrono::seconds(600), [this]() { return !nextfunctionSC; }))
+        while (!functionDone.wait_until(guard, std::chrono::steady_clock::now() + std::chrono::seconds(600), [this]() { return !nextfunctionSC; }))
         {
             if (!debugging)
             {
@@ -1121,7 +1120,7 @@ public:
         using std::future_status;
         using std::shared_ptr;
 
-        using PromiseType = promise<ResultType>;
+        using PromiseType = std::promise<ResultType>;
         using PointerType = shared_ptr<PromiseType>;
 
         auto promise = PointerType(new PromiseType());
@@ -1158,9 +1157,9 @@ public:
                   PromiseBoolSP result);
 
     void movenodetotrash(string path, PromiseBoolSP pb);
-    void exportnode(std::shared_ptr<Node> n, int del, m_time_t expiry, bool writable, bool megaHosted, promise<Error>& pb);
-    void getpubliclink(Node* n, int del, m_time_t expiry, bool writable, bool megaHosted, promise<Error>& pb);
-    void waitonsyncs(chrono::seconds d = chrono::seconds(2));
+    void exportnode(std::shared_ptr<Node> n, int del, m_time_t expiry, bool writable, bool megaHosted, std::promise<Error>& pb);
+    void getpubliclink(Node* n, int del, m_time_t expiry, bool writable, bool megaHosted, std::promise<Error>& pb);
+    void waitonsyncs(std::chrono::seconds d = std::chrono::seconds(2));
     /**
      * @brief Collect syncs problems (stall issues and name conflicts)
      * @param problems SyncProblems struct where sync problems will be stored
@@ -1403,7 +1402,7 @@ bool debugTolerantWaitOnFuture(std::future<T> f, size_t numSeconds)
     // otherwise, things fail on timeout immediately
     for (size_t i = 0; i < numSeconds*10; ++i)
     {
-        if (future_status::ready == f.wait_for(std::chrono::milliseconds(100)))
+        if (std::future_status::ready == f.wait_for(std::chrono::milliseconds(100)))
         {
             return true;
         }

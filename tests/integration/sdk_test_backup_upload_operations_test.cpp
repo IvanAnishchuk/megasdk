@@ -309,7 +309,7 @@ void SdkTestBackupUploadsOperations::confirmModels() const
 {
     const auto areLocalAndCloudSyncedExhaustive = [this]() -> bool
     {
-        return checkSyncRecursively(getBackupRootHandle(), nullopt);
+        return checkSyncRecursively(getBackupRootHandle(), std::nullopt);
     };
 
     ASSERT_TRUE(waitFor(areLocalAndCloudSyncedExhaustive, COMMON_TIMEOUT, 10s));
