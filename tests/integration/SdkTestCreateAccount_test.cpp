@@ -252,7 +252,7 @@ void SdkTestCreateAccount::doCreateAccountTest(const std::string& testName, int 
     // ---------------------------
 
     LOG_debug << testName << ": Start reset password";
-    std::chrono::time_point timeOfResetEmail = chrono::steady_clock::now();
+    std::chrono::time_point timeOfResetEmail = std::chrono::steady_clock::now();
     ASSERT_EQ(synchronousResetPassword(0, newTestAcc.c_str(), true), MegaError::API_OK)
         << "resetPassword failed";
 
@@ -315,7 +315,7 @@ void SdkTestCreateAccount::doCreateAccountTest(const std::string& testName, int 
 
     LOG_debug << testName << ": Send change email request";
     const std::string changedTestAcc = Utils::replace(newTestAcc, "@", "-new@");
-    std::chrono::time_point timeOfChangeEmail = chrono::steady_clock::now();
+    std::chrono::time_point timeOfChangeEmail = std::chrono::steady_clock::now();
     ASSERT_EQ(synchronousChangeEmail(0, changedTestAcc.c_str()), MegaError::API_OK)
         << "changeEmail failed";
 

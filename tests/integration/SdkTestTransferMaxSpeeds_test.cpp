@@ -206,7 +206,7 @@ private:
                 << "The transfer didn't finish successfully in the given time window";
             return {};
         }
-        return std::chrono::duration_cast<chrono::seconds>(endTime - startTime);
+        return std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime);
     }
 };
 
