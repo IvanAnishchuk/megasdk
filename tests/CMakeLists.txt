@@ -21,6 +21,14 @@ target_sources(test_tools
 
 target_link_libraries(test_tools PRIVATE MEGA::SDKlib)
 
+# sdk_test_data_provider.cpp uses libcurl directly. SDKlib links curl PRIVATE,
+# so with a shared SDKlib it is not propagated transitively — declare the
+# direct dependency explicitly. test_tools is static, so this reaches every
+# consumer as $<LINK_ONLY:>, including gfxworker_test_integration, which links
+# test_tools without pulling curl in on its own.
+find_package(CURL REQUIRED)
+target_link_libraries(test_tools PRIVATE CURL::libcurl)
+
 target_include_directories(test_tools
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
