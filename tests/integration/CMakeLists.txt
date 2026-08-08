@@ -88,6 +88,21 @@ target_sources_conditional(test_integration
     IsolatedGfx_test.cpp
 )
 
+# IsolatedGfx_test.cpp calls FreeImage_Load/_Unload/_IsTransparent directly to
+# inspect the thumbnails it generates. SDKlib links FreeImage PRIVATE, so with
+# a shared SDKlib it is not propagated transitively — declare it here. Same
+# find as cmake/modules/sdklib_libraries.cmake, target name and all: vcpkg
+# ships a freeimage config, elsewhere we use our own FindFreeImage.cmake.
+if(ENABLE_ISOLATED_GFX)
+    if(VCPKG_ROOT)
+        find_package(freeimage REQUIRED)
+        target_link_libraries(test_integration PRIVATE freeimage::FreeImage)
+    else()
+        find_package(FreeImage REQUIRED)
+        target_link_libraries(test_integration PRIVATE FreeImage::FreeImage)
+    endif()
+endif()
+
 # Load common test sources.
 include(common/common.cmake)
 
