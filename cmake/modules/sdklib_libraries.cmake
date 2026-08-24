@@ -99,6 +99,13 @@ macro(load_sdklib_libraries)
         if(USE_PDFIUM)
             find_package(pdfium REQUIRED)
             target_link_libraries(SDKlib PRIVATE PDFIUM::pdfium)
+            # mega.h reaches gfx/freeimage.h, which includes gfx/gfx_pdfium.h,
+            # which includes <fpdfview.h> once HAVE_PDFIUM is set. Consumers
+            # compiling the SDK's own public headers therefore need pdfium's
+            # include dirs, while the library itself stays PRIVATE so it does
+            # not leak into the installed export set.
+            target_include_directories(SDKlib SYSTEM PUBLIC
+                $<BUILD_INTERFACE:$<TARGET_PROPERTY:PDFIUM::pdfium,INTERFACE_INCLUDE_DIRECTORIES>>)
             set(HAVE_PDFIUM 1)
         endif()
 
@@ -170,6 +177,11 @@ macro(load_sdklib_libraries)
         if(USE_PDFIUM)
             pkg_check_modules(pdfium REQUIRED IMPORTED_TARGET pdfium)
             target_link_libraries(SDKlib PRIVATE PkgConfig::pdfium)
+            # See the vcpkg branch above: <fpdfview.h> is reached from the
+            # public mega.h, so consumers need the include dirs even though the
+            # library stays PRIVATE.
+            target_include_directories(SDKlib SYSTEM PUBLIC
+                $<BUILD_INTERFACE:$<TARGET_PROPERTY:PkgConfig::pdfium,INTERFACE_INCLUDE_DIRECTORIES>>)
             set(HAVE_PDFIUM 1)
         endif()
 
