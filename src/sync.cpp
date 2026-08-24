@@ -12368,9 +12368,10 @@ bool Sync::resolve_fsNodeGone(SyncRow& row, SyncRow& /*parentRow*/, SyncPath& fu
                                     // if we decided to remove a file, but it turns out not to be
                                     // the latest version of that file, abandon the action
                                     // and let the sync recalculate
+                                    const auto nodePath = n->displaypath();
                                     LOG_debug << "Sync delete was out of date, there is a more "
                                                  "recent version of the file. "
-                                              << debrisNodeHandle << " " << n->displaypath();
+                                              << debrisNodeHandle << " " << nodePath;
                                     return;
                                 }
 

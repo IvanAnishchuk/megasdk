@@ -18615,7 +18615,9 @@ void MegaClient::execmovetosyncdebris(Node* requestedNode, std::function<void(No
             {
                 if (!rec.mIsInshare)
                 {
-                    LOG_debug << "Moving to cloud Syncdebris: " << n->displaypath() << " in " << debrisTarget->displaypath() << " Nhandle: " << LOG_NODEHANDLE(n->nodehandle);
+                    const auto nodePath = n->displaypath();
+                    const auto targetPath = debrisTarget->displaypath();
+                    LOG_debug << "Moving to cloud Syncdebris: " << nodePath << " in " << targetPath << " Nhandle: " << LOG_NODEHANDLE(n->nodehandle);
                     rename(n,
                            debrisTarget,
                            SYNCDEL_DEBRISDAY,
@@ -18626,13 +18628,15 @@ void MegaClient::execmovetosyncdebris(Node* requestedNode, std::function<void(No
                 }
                 else
                 {
-                    LOG_debug << "Copy and delete to cloud Syncdebris: " << n->displaypath() << " in " << debrisTarget->displaypath() << " Nhandle: " << LOG_NODEHANDLE(n->nodehandle);
+                    const auto nodePath = n->displaypath();
+                    const auto targetPath = debrisTarget->displaypath();
+                    LOG_debug << "Copy and delete to cloud Syncdebris: " << nodePath << " in " << targetPath << " Nhandle: " << LOG_NODEHANDLE(n->nodehandle);
                     TreeProcCopy tc;
                     proctree(n, &tc, false, false);
                     if (tc.unusableKey)
                     {
                         LOG_err << "SyncDebris: node " << toNodeHandle(n->nodehandle) << " ("
-                                << n->displaypath()
+                                << nodePath
                                 << ") has an unusable key, skipping copy-to-debris";
                         if (rec.completion)
                             rec.completion(rec.nodeHandle, API_EKEY);
@@ -18643,7 +18647,7 @@ void MegaClient::execmovetosyncdebris(Node* requestedNode, std::function<void(No
                     if (tc.nn.empty())
                     {
                         LOG_err << "SyncDebris: node " << toNodeHandle(n->nodehandle) << " ("
-                                << n->displaypath()
+                                << nodePath
                                 << ") produced no copyable nodes, skipping copy-to-debris";
                         if (rec.completion)
                             rec.completion(rec.nodeHandle, API_EARGS);

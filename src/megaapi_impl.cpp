@@ -10860,8 +10860,8 @@ void MegaApiImpl::moveOrRemoveDeconfiguredBackupNodes(MegaHandle deconfiguredBac
             LOG_debug << "Backup root node not found";
             return API_ENOENT;
         }
-        LOG_debug << "About to move/remove backup nodes from "
-                  << deconfiguredBackupRootNode->displaypath();
+        const auto backupRootPath = deconfiguredBackupRootNode->displaypath();
+        LOG_debug << "About to move/remove backup nodes from " << backupRootPath;
 
         if (!deconfiguredBackupRootNode->parent || // device
             !deconfiguredBackupRootNode->parent->parent || // my backups node
@@ -10879,8 +10879,9 @@ void MegaApiImpl::moveOrRemoveDeconfiguredBackupNodes(MegaHandle deconfiguredBac
             backupDestinationNode->firstancestor()->nodeHandle() !=
                 client->mNodeManager.getRootNodeRubbish().as8byte())
         {
+            const auto destinationPath = backupDestinationNode->displaypath();
             LOG_debug << "Destination node not in the main files root, or in rubbish: "
-                      << backupDestinationNode->displaypath();
+                      << destinationPath;
             return API_EARGS;
         }
 
@@ -22035,8 +22036,9 @@ void MegaApiImpl::restoreVersion(MegaNode* version, MegaRequestListener* listene
 
             if (!version->keyApplied())
             {
+                const auto versionPath = version->displaypath();
                 LOG_err << "restoreVersion: version " << toNodeHandle(version->nodehandle) << " ("
-                        << version->displaypath() << ") has an unapplied key, cannot restore";
+                        << versionPath << ") has an unapplied key, cannot restore";
                 return API_EKEY;
             }
 
