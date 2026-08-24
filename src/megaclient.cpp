@@ -5748,7 +5748,8 @@ std::shared_ptr<Node> MegaClient::sc_procActionPacketWithoutCommonTags(JSON& jso
             case makeNameid("mcpc"):
             {
                 readingPublicChat = true;
-            } // fall-through
+            }
+            [[fallthrough]];
             case makeNameid("mcc"):
                 // chat creation / peer's invitation / peer's removal
                 sc_chatupdate(json, readingPublicChat);
@@ -14094,7 +14095,8 @@ void MegaClient::procmcf(JSON *j)
                 case makeNameid("pc"): // list of public and/or formerly public chatrooms
                 {
                     readingPublicChats = true;
-                }   // fall-through
+                }
+                [[fallthrough]];
                 case name_id::c: // list of chatrooms
                 {
                     j->enterarray();
@@ -14274,7 +14276,8 @@ void MegaClient::procmcf(JSON *j)
                 case makeNameid("pcf"): // list of flags for public and/or formerly public chatrooms
                 {
                     readingPublicChats = true;
-                }   // fall-through
+                }
+                [[fallthrough]];
                 case makeNameid("cf"):
                 {
                     j->enterarray();
