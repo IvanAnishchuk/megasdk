@@ -151,18 +151,18 @@ public:
     handle mLocalPathFsid = UNDEF;
 
     // type of the sync, defaults to bidirectional
-    Type mSyncType;
+    Type mSyncType = TYPE_TWOWAY;
 
     // failure cause (disable/failure cause).
-    SyncError mError;
+    SyncError mError = NO_SYNC_ERROR;
 
     // Warning if creation was successful but the user should know something
-    SyncWarning mWarning;
+    SyncWarning mWarning = NO_SYNC_WARNING;
 
     // Unique identifier. any other field can change (even remote handle),
     // and we want to keep disabled configurations saved: e.g: remote handle changed
     // id for heartbeating
-    handle mBackupId;
+    handle mBackupId = UNDEF;
 
     // Path to the volume containing this backup (only for external backups).
     // This one is not serialized
